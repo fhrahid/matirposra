@@ -1,26 +1,71 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #FAF3E8;
+  --foreground: #2C1A0E;
+  
+  --clay: #8B4513;
+  --terracotta: #C1440E;
+  --terracotta-light: #E07A5F;
+  --amber: #D4860A;
+  --earth: #6B3A2A;
+  --cream: #FAF3E8;
+  --cream-dark: #F0E4CE;
+  --leaf: #3A5A2A;
+  --leaf-light: #5A8040;
+  --text-dark: #2C1A0E;
+  --text-mid: #5C3D2E;
+  --text-light: #8B6A5A;
+  --white: #FFFDF8;
+  
+  --shadow: 0 4px 20px rgba(139,69,19,0.12);
+  --shadow-hover: 0 8px 32px rgba(139,69,19,0.22);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  
+  --color-clay: var(--clay);
+  --color-terracotta: var(--terracotta);
+  --color-terracotta-light: var(--terracotta-light);
+  --color-amber: var(--amber);
+  --color-earth: var(--earth);
+  --color-cream: var(--cream);
+  --color-cream-dark: var(--cream-dark);
+  --color-leaf: var(--leaf);
+  --color-leaf-light: var(--leaf-light);
+  --color-text-dark: var(--text-dark);
+  --color-text-mid: var(--text-mid);
+  --color-text-light: var(--text-light);
+  --color-white: var(--white);
+  
+  --shadow-clay: var(--shadow);
+  --shadow-clay-hover: var(--shadow-hover);
+  
+  --font-hind: var(--font-hind-siliguri);
+  --font-tiro: var(--font-tiro-bangla);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-hind-siliguri), sans-serif;
+}
+
+h1, h2, h3, .font-tiro {
+  font-family: var(--font-tiro-bangla), serif;
+}
+
+@layer utilities {
+  .fade-up {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: all 0.5s ease;
+  }
+  
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
