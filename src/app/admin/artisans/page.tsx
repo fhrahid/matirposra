@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import { 
-  Users, 
   Search, 
   Plus, 
   Edit2, 
@@ -12,14 +11,19 @@ import {
   Award
 } from "lucide-react";
 
+interface Artisan {
+  _id: string;
+  name: string;
+  village: string;
+  experience: string;
+  story: string;
+  image?: string;
+}
+
 const AdminArtisansPage = () => {
-  const [artisans, setArtisans] = useState<any[]>([]);
+  const [artisans, setArtisans] = useState<Artisan[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-
-  useEffect(() => {
-    fetchArtisans();
-  }, []);
 
   const fetchArtisans = async () => {
     try {
@@ -32,6 +36,10 @@ const AdminArtisansPage = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    setTimeout(() => fetchArtisans(), 0);
+  }, []);
 
   const filteredArtisans = artisans.filter(a => 
     a.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -108,7 +116,7 @@ const AdminArtisansPage = () => {
                     </td>
                     <td className="px-8 py-6">
                       <p className="text-[11px] text-text-light leading-relaxed max-w-[200px] truncate italic">
-                        "{artisan.story}"
+                        &quot;{artisan.story}&quot;
                       </p>
                     </td>
                     <td className="px-8 py-6 text-right">

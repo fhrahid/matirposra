@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Header from "@/components/layout/Header";
 import Navbar from "@/components/layout/Navbar";
@@ -10,10 +10,16 @@ import CartModal from "@/components/ui/CartModal";
 import TrackingModal from "@/components/ui/TrackingModal";
 import { Search as SearchIcon, Loader2 } from "lucide-react";
 
-const SearchPage = () => {
+import { IProduct } from "@/models/Product";
+
+interface SearchProduct extends Omit<IProduct, 'id'> {
+  id: string;
+}
+
+const SearchContent = () => {
   const searchParams = useSearchParams();
   const query = searchParams.get("q");
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<SearchProduct[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -52,7 +58,7 @@ const SearchPage = () => {
           <div>
             <h1 className="font-tiro text-3xl text-text-dark">অনুসন্ধানের ফলাফল</h1>
             <p className="text-sm text-text-light">
-              "{query}"-এর জন্য {products.length}টি পণ্য পাওয়া গেছে
+              &quot;{query}&quot;-এর জন্য {products.length}টি পণ্য পাওয়া গেছে
             </p>
           </div>
         </div>
@@ -89,6 +95,23 @@ const SearchPage = () => {
       <CartModal />
       <TrackingModal />
     </main>
+  );
+};
+
+const SearchPage = () => {
+  return (
+    <Suspense fallback={
+      <main className="min-h-screen bg-cream">
+        <Header />
+        <Navbar />
+        <div className="flex items-center justify-center py-20">
+          <Loader2 className="animate-spin text-terracotta" size={40} />
+        </div>
+        <Footer />
+      </main>
+    }>
+      <SearchContent />
+    </Suspense>
   );
 };
 

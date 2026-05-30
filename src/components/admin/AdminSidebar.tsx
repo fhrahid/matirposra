@@ -9,7 +9,6 @@ import {
   Users, 
   Package, 
   LogOut, 
-  Settings,
   ChevronRight
 } from "lucide-react";
 

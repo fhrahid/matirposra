@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Star, X } from "lucide-react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 

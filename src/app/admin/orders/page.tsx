@@ -2,32 +2,45 @@
 
 import React, { useEffect, useState } from "react";
 import { 
-  Package, 
   Search, 
   ExternalLink, 
-  MoreVertical,
   Loader2,
   Calendar,
-  Phone,
-  MapPin,
-  CheckCircle2
+  Phone
 } from "lucide-react";
 
+interface OrderItem {
+  productId: string;
+  name: string;
+  price: number;
+  qty: number;
+  icon?: string;
+}
+
+interface Order {
+  _id: string;
+  orderNumber: string;
+  customer: {
+    name: string;
+    phone: string;
+    address: string;
+  };
+  items: OrderItem[];
+  totalPrice: number;
+  status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
+  createdAt: string;
+}
+
 const AdminOrdersPage = () => {
-  const [orders, setOrders] = useState<any[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
-
-  useEffect(() => {
-    fetchOrders();
-  }, []);
 
   const fetchOrders = async () => {
     try {
       // In a real app, this would be an admin-only API
       // For demo, we'll use a direct fetch (ideally protected by layout auth)
-      const res = await fetch("/api/orders/all"); // We'll need to create this or use a query
-      // Wait, let's create a specific admin orders API for fetching all
+      // const res = await fetch("/api/orders/all"); 
       const response = await fetch("/api/admin/orders");
       const data = await response.json();
       setOrders(data.orders || []);
@@ -38,7 +51,11 @@ const AdminOrdersPage = () => {
     }
   };
 
-  const handleStatusUpdate = async (orderId: string, newStatus: string) => {
+  useEffect(() => {
+    setTimeout(() => fetchOrders(), 0);
+  }, []);
+
+  const handleStatusUpdate = async (orderId: string, newStatus: Order["status"]) => {
     setUpdating(orderId);
     try {
       const res = await fetch(`/api/admin/orders/${orderId}`, {
@@ -131,7 +148,7 @@ const AdminOrdersPage = () => {
                       <div className="flex flex-col gap-1">
                         <span className="text-xs font-medium text-text-mid">{order.items.length}টি আইটেম</span>
                         <div className="flex items-center gap-1.5 text-[10px] text-text-light truncate max-w-[150px]">
-                          {order.items.map((it: any) => it.name).join(", ")}
+                          {order.items.map((it) => it.name).join(", ")}
                         </div>
                       </div>
                     </td>
@@ -148,7 +165,7 @@ const AdminOrdersPage = () => {
                         ) : (
                           <select 
                             value={order.status}
-                            onChange={(e) => handleStatusUpdate(order._id, e.target.value)}
+                            onChange={(e) => handleStatusUpdate(order._id, e.target.value as Order["status"])}
                             className={`text-[10px] font-bold px-3 py-1.5 rounded-full border outline-none cursor-pointer appearance-none ${statusMap[order.status].class}`}
                           >
                             <option value="pending">অপেক্ষমান</option>

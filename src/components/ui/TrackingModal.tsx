@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { X, Search, Package, MapPin, CheckCircle2, Loader2 } from "lucide-react";
+import { X, Package, Loader2 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { motion, AnimatePresence } from "framer-motion";
+import { IOrder } from "@/models/Order";
 
 const statusSteps: Record<string, number> = {
   pending: 0,
@@ -22,7 +23,7 @@ const statusLabels: Record<string, string> = {
 const TrackingModal = () => {
   const { isTrackingOpen, setIsTrackingOpen } = useCart();
   const [orderNumber, setOrderNumber] = useState("");
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<IOrder | "not-found" | null>(null);
   const [loading, setLoading] = useState(false);
 
   if (!isTrackingOpen) return null;
@@ -119,7 +120,7 @@ const TrackingModal = () => {
               <div className="text-center py-4">
                 <Package size={52} className="text-cream-dark mx-auto mb-3.5" />
                 <h3 className="font-tiro text-lg text-text-dark mb-2">অর্ডার নম্বর দিন</h3>
-                <p className="text-sm text-clay max-w-[320px] mx-auto leading-relaxed">আপনার অর্ডার নম্বরটি উপরের বক্সে লিখে "খুঁজুন" বাটনে চাপুন।</p>
+                <p className="text-sm text-clay max-w-[320px] mx-auto leading-relaxed">আপনার অর্ডার নম্বরটি উপরের বক্সে লিখে &quot;খুঁজুন&quot; বাটনে চাপুন।</p>
               </div>
             ) : result === "not-found" ? (
               <div className="text-center py-4">

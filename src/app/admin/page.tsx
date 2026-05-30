@@ -8,8 +8,7 @@ import {
   Package, 
   Users, 
   TrendingUp,
-  Clock,
-  CheckCircle2
+  Clock
 } from "lucide-react";
 
 async function getStats() {
@@ -32,7 +31,7 @@ async function getStats() {
       orderCount,
       artisanCount,
       totalRevenue,
-      recentOrders: orders.map((o: any) => ({
+      recentOrders: orders.map((o) => ({
         id: o._id.toString(),
         orderNumber: o.orderNumber,
         customerName: o.customer.name,

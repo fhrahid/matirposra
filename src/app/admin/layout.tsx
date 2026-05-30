@@ -16,19 +16,24 @@ export default function AdminLayout({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Skip auth check for login page
-    if (pathname === "/admin/login") {
-      setLoading(false);
-      return;
-    }
+    const checkAuth = () => {
+      if (pathname === "/admin/login") {
+        setLoading(false);
+        return;
+      }
 
-    const auth = localStorage.getItem("admin_auth");
-    if (!auth) {
-      router.push("/admin/login");
-    } else {
-      setIsAuth(true);
-    }
-    setLoading(false);
+      const auth = localStorage.getItem("admin_auth");
+      if (!auth) {
+        router.push("/admin/login");
+      } else {
+        setIsAuth(true);
+      }
+      setLoading(false);
+    };
+
+    // Use a small timeout or requestAnimationFrame to avoid synchronous setState in effect
+    const timeoutId = setTimeout(checkAuth, 0);
+    return () => clearTimeout(timeoutId);
   }, [pathname, router]);
 
   if (loading) {

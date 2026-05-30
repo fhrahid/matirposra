@@ -9,7 +9,8 @@ import TrackingModal from "@/components/ui/TrackingModal";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import dbConnect from "@/lib/mongodb";
-import Product from "@/models/Product";
+import Product, { IProduct } from "@/models/Product";
+import type { QueryFilter } from "mongoose";
 
 const slugToName: Record<string, string> = {
   kitchen: "রান্নাঘরের পণ্য",
@@ -27,7 +28,7 @@ async function getCategoryProducts(slug: string, searchParams: { min?: string, m
     
     await dbConnect();
     
-    const query: any = { category: categoryName };
+    const query: QueryFilter<IProduct> = { category: categoryName };
     
     // Price filter
     if (searchParams.min || searchParams.max) {
@@ -41,8 +42,8 @@ async function getCategoryProducts(slug: string, searchParams: { min?: string, m
       query.rating = { $gte: parseInt(searchParams.rating) };
     }
 
-    const products = await Product.find(query).lean();
-    return products.map((p: any) => ({ ...p, id: p._id.toString() }));
+    const products = await Product.find(query).lean() as IProduct[];
+    return products.map((p) => ({ ...p, id: p._id.toString() }));
   } catch (e) {
     console.error("Failed to fetch category products", e);
     return [];

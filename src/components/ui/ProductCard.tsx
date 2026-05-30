@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import Link from "next/link";
 import { Eye, Heart } from "lucide-react";
@@ -13,7 +15,7 @@ interface ProductCardProps {
     rating: number;
     reviewsCount: number;
     badge?: "new" | "sale" | "hot";
-    icon: string;
+    icon?: string;
   };
 }
 

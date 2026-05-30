@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/mongodb";
-import Product from "@/models/Product";
+import Product, { IProduct } from "@/models/Product";
 
 export async function GET(request: Request) {
   try {
@@ -16,9 +16,9 @@ export async function GET(request: Request) {
     // Fuzzy search using regex
     const products = await Product.find({
       name: { $regex: query, $options: "i" },
-    }).limit(20).lean();
+    }).limit(20).lean() as IProduct[];
 
-    const formattedProducts = products.map((p: any) => ({
+    const formattedProducts = products.map((p) => ({
       ...p,
       id: p._id.toString(),
     }));

@@ -11,9 +11,18 @@ export interface CartItem {
   image?: string;
 }
 
+export interface AddToCartItem {
+  _id?: string;
+  id?: string;
+  name: string;
+  price: number;
+  icon?: string;
+  image?: string;
+}
+
 interface CartContextType {
   cartItems: CartItem[];
-  addToCart: (product: any) => void;
+  addToCart: (product: AddToCartItem) => void;
   removeFromCart: (id: string) => void;
   updateQty: (id: string, delta: number) => void;
   clearCart: () => void;
@@ -37,7 +46,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const savedCart = localStorage.getItem("matir_poshara_cart");
     if (savedCart) {
       try {
-        setCartItems(JSON.parse(savedCart));
+        const parsed = JSON.parse(savedCart);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setTimeout(() => setCartItems(parsed), 0);
+        }
       } catch (e) {
         console.error("Failed to parse cart from localStorage", e);
       }
@@ -49,18 +61,19 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem("matir_poshara_cart", JSON.stringify(cartItems));
   }, [cartItems]);
 
-  const addToCart = (product: any) => {
+  const addToCart = (product: AddToCartItem) => {
     setCartItems((prevItems) => {
-      const existingItem = prevItems.find((item) => item.id === (product._id || product.name));
+      const productId = product.id || product._id || product.name;
+      const existingItem = prevItems.find((item) => item.id === productId);
       if (existingItem) {
         return prevItems.map((item) =>
-          item.id === (product._id || product.name) ? { ...item, qty: item.qty + 1 } : item
+          item.id === productId ? { ...item, qty: item.qty + 1 } : item
         );
       }
       return [
         ...prevItems,
         {
-          id: product._id || product.name,
+          id: productId,
           name: product.name,
           price: product.price,
           qty: 1,

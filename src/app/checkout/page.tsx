@@ -6,7 +6,7 @@ import Header from "@/components/layout/Header";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { useCart } from "@/context/CartContext";
-import { ShoppingBag, ChevronLeft, CheckCircle2, Loader2, MapPin, Phone, User } from "lucide-react";
+import { ChevronLeft, CheckCircle2, Loader2, MapPin, Phone, User } from "lucide-react";
 import Link from "next/link";
 
 const CheckoutPage = () => {
@@ -190,7 +190,7 @@ const CheckoutPage = () => {
                     )}
                   </button>
                   <p className="text-center text-[10px] text-text-light mt-4">
-                    "অর্ডার নিশ্চিত করুন" বাটনে ক্লিক করার মাধ্যমে আপনি আমাদের শর্তাবলীতে সম্মত হচ্ছেন।
+                    &quot;অর্ডার নিশ্চিত করুন&quot; বাটনে ক্লিক করার মাধ্যমে আপনি আমাদের শর্তাবলীতে সম্মত হচ্ছেন।
                   </p>
                 </div>
               </form>

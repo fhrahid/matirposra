@@ -9,14 +9,14 @@ import Badge from "@/components/ui/Badge";
 import Link from "next/link";
 import { ChevronRight, Star, Truck, ShieldCheck, RotateCcw, Minus, Plus } from "lucide-react";
 import dbConnect from "@/lib/mongodb";
-import Product from "@/models/Product";
+import Product, { IProduct } from "@/models/Product";
 
 async function getProduct(id: string) {
   try {
     await dbConnect();
-    const product = await Product.findById(id).lean();
+    const product = await Product.findById(id).lean() as IProduct | null;
     if (!product) return null;
-    return { ...product, id: (product as any)._id.toString() };
+    return { ...product, id: product._id.toString() };
   } catch (e) {
     console.error("Failed to fetch product", e);
     return null;
@@ -29,8 +29,8 @@ async function getRelatedProducts(category: string, currentId: string) {
     const products = await Product.find({ 
       category, 
       _id: { $ne: currentId } 
-    }).limit(4).lean();
-    return products.map((p: any) => ({ ...p, id: p._id.toString() }));
+    }).limit(4).lean() as IProduct[];
+    return products.map((p) => ({ ...p, id: p._id.toString() }));
   } catch (e) {
     console.error("Failed to fetch related products", e);
     return [];
@@ -39,7 +39,7 @@ async function getRelatedProducts(category: string, currentId: string) {
 
 export default async function ProductDetailPage({ params }: { params: { id: string } }) {
   const { id } = params;
-  const product: any = await getProduct(id);
+  const product = await getProduct(id);
 
   if (!product) {
     return (

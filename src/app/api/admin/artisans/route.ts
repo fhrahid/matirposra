@@ -8,7 +8,7 @@ export async function GET() {
     await dbConnect();
     const artisans = await Artisan.find({}).sort({ createdAt: -1 }).lean();
     return NextResponse.json({ artisans });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Failed to fetch artisans" }, { status: 500 });
   }
 }
@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     await dbConnect();
     const artisan = await Artisan.create(body);
     return NextResponse.json({ success: true, artisan });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Failed to create artisan" }, { status: 500 });
   }
 }

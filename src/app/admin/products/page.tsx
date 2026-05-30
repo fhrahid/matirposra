@@ -2,23 +2,33 @@
 
 import React, { useEffect, useState } from "react";
 import { 
-  ShoppingBag, 
   Search, 
   Plus, 
   Edit2, 
   Trash2, 
-  Loader2,
-  Image as ImageIcon
+  Loader2
 } from "lucide-react";
 
+interface Product {
+  _id: string;
+  name: string;
+  description: string;
+  price: number;
+  originalPrice?: number;
+  rating: number;
+  reviewsCount: number;
+  category: string;
+  badge?: "new" | "sale" | "hot";
+  image?: string;
+  images: string[];
+  icon?: string;
+  isBestSelling: boolean;
+}
+
 const AdminProductsPage = () => {
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
 
   const fetchProducts = async () => {
     try {
@@ -31,6 +41,10 @@ const AdminProductsPage = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    setTimeout(() => fetchProducts(), 0);
+  }, []);
 
   const filteredProducts = products.filter(p => 
     p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||

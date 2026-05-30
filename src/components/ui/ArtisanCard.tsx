@@ -27,7 +27,7 @@ const ArtisanCard: React.FC<ArtisanCardProps> = ({ artisan }) => {
             {artisan.experience}
           </span>
         </div>
-        <p className="text-[15px] text-[#6B4C35] leading-relaxed italic mb-5 relative before:content-['\"'] before:text-2xl before:text-terracotta-light after:content-['\"'] after:text-2xl after:text-terracotta-light">
+        <p className="text-[15px] text-[#6B4C35] leading-relaxed italic mb-5 relative before:content-['\201C'] before:text-2xl before:text-terracotta-light after:content-['\201D'] after:text-2xl after:text-terracotta-light">
           {artisan.story}
         </p>
         <button className="border-1.5 border-terracotta text-terracotta px-5.5 py-2.5 rounded-full font-hind text-sm font-semibold hover:bg-terracotta hover:text-white transition-all self-start">

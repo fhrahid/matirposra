@@ -4,11 +4,11 @@ import Order from "@/models/Order";
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { status } = await request.json();
-    const { id } = params;
+    const { id } = await params;
 
     if (!status) {
       return NextResponse.json({ error: "Status is required" }, { status: 400 });

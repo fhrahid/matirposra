@@ -9,7 +9,7 @@ import ArtisanCard from "@/components/ui/ArtisanCard";
 import SectionHeader from "@/components/ui/SectionHeader";
 import CartModal from "@/components/ui/CartModal";
 import TrackingModal from "@/components/ui/TrackingModal";
-import { ArrowRight, Truck, ShieldCheck, MapPin } from "lucide-react";
+import { ArrowRight, Truck, ShieldCheck, MapPin, Package } from "lucide-react";
 import dbConnect from "@/lib/mongodb";
 import Product from "@/models/Product";
 import Artisan from "@/models/Artisan";
@@ -17,12 +17,12 @@ import Category from "@/models/Category";
 
 // Mock Data as Fallback
 const mockCategories = [
-  { name: "রান্নাঘরের পণ্য", productCount: 48, icon: "🍲" },
-  { name: "ঘর সাজানো", productCount: 62, icon: "🏠" },
-  { name: "বাগানের পণ্য", productCount: 35, icon: "🌱" },
-  { name: "আলোকসজ্জা", productCount: 24, icon: "🕯" },
-  { name: "উপহারের সামগ্রী", productCount: 40, icon: "🎁" },
-  { name: "ঐতিহ্যবাহী সংগ্রহ", productCount: 51, icon: "🏺" },
+  { name: "রান্নাঘরের পণ্য", count: 48, icon: "🍲" },
+  { name: "ঘর সাজানো", count: 62, icon: "🏠" },
+  { name: "বাগানের পণ্য", count: 35, icon: "🌱" },
+  { name: "আলোকসজ্জা", count: 24, icon: "🕯" },
+  { name: "উপহারের সামগ্রী", count: 40, icon: "🎁" },
+  { name: "ঐতিহ্যবাহী সংগ্রহ", count: 51, icon: "🏺" },
 ];
 
 const mockProducts = [
@@ -94,21 +94,25 @@ const mockArtisans = [
   }
 ];
 
+import { IProduct } from "@/models/Product";
+import { IArtisan } from "@/models/Artisan";
+import { ICategory } from "@/models/Category";
+
 async function getData() {
   try {
     if (!process.env.MONGODB_URI) return null;
     await dbConnect();
     
     const [products, artisans, categories] = await Promise.all([
-      Product.find({ isBestSelling: true }).limit(5).lean(),
-      Artisan.find({}).limit(2).lean(),
-      Category.find({}).limit(6).lean()
+      Product.find({ isBestSelling: true }).limit(5).lean() as Promise<IProduct[]>,
+      Artisan.find({}).limit(2).lean() as Promise<IArtisan[]>,
+      Category.find({}).limit(6).lean() as Promise<ICategory[]>
     ]);
 
     return {
-      products: products.length > 0 ? products.map((p: any) => ({ ...p, id: p._id.toString() })) : mockProducts,
+      products: products.length > 0 ? products.map((p) => ({ ...p, id: p._id.toString() })) : mockProducts,
       artisans: artisans.length > 0 ? artisans : mockArtisans,
-      categories: categories.length > 0 ? categories.map((c: any) => ({ name: c.name, count: c.productCount, icon: "🏺" })) : mockCategories
+      categories: categories.length > 0 ? categories.map((c) => ({ name: c.name, count: c.productCount, icon: c.icon || "🏺" })) : mockCategories
     };
   } catch (e) {
     console.error("Database fetch failed, using fallback data", e);
@@ -139,7 +143,7 @@ export default async function Home() {
           />
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {categories.map((cat, i) => (
-              <CategoryCard key={i} name={cat.name} count={cat.count || (cat as any).productCount} icon={(cat as any).icon} />
+              <CategoryCard key={i} name={cat.name} count={cat.count} icon={cat.icon} />
             ))}
           </div>
         </section>
@@ -156,7 +160,7 @@ export default async function Home() {
             </a>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {products.map((prod: any) => (
+            {products.map((prod) => (
               <ProductCard key={prod.id} product={prod} />
             ))}
           </div>
@@ -170,7 +174,7 @@ export default async function Home() {
               <p className="text-sm text-clay">প্রতিটি পণ্যের পেছনে একজন দক্ষ কারিগরের হাতের ছোঁয়া</p>
             </div>
             <div className="flex flex-col gap-8">
-              {artisans.map((artisan: any, i: number) => (
+              {artisans.map((artisan, i) => (
                 <ArtisanCard key={i} artisan={artisan} />
               ))}
             </div>

@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { Facebook, Instagram, Youtube, Twitter, Phone, Mail, MapPin } from "lucide-react";
+import { Share2, Camera, Video, Globe, Phone, Mail, MapPin } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -23,7 +23,7 @@ const Footer = () => {
             </p>
           </div>
           <div className="flex gap-2.5 mt-3.5">
-            {[Facebook, Instagram, Youtube, Twitter].map((Icon, i) => (
+            {[Share2, Camera, Video, Globe].map((Icon, i) => (
               <Link
                 key={i}
                 href="#"
