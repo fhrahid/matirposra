@@ -1,0 +1,4 @@
+name,description,category,price,originalPrice,discount,stock,image,icon,badge,rating,reviewsCount,isBestSelling
+মাটির ফুলদানি,হাতে তৈরি টেরাকোটা ফুলদানি,ঘর সাজানো,450,600,,20,https://example.com/vase.jpg,🏺,sale,5,12,true
+মাটির চায়ের কাপ,৬ পিসের চা কাপ সেট,রান্নাঘরের পণ্য,300,,25,50,,☕,,4,8,false
+মাটির প্রদীপ,উৎসবের জন্য মাটির প্রদীপ,আলোকসজ্জা,120,,,0,,🪔,,5,40,false

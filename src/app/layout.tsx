@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Hind_Siliguri, Tiro_Bangla } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
+import LiveChatWidget from "@/components/LiveChatWidget";
 
 const hindSiliguri = Hind_Siliguri({
   variable: "--font-hind-siliguri",
@@ -27,12 +28,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="bn">
+    <html lang="bn" suppressHydrationWarning>
       <body
+        suppressHydrationWarning
         className={`${hindSiliguri.variable} ${tiroBangla.variable} antialiased`}
       >
         <Providers>
           {children}
+          <LiveChatWidget />
         </Providers>
       </body>
     </html>

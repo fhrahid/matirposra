@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/mongodb";
 import Product from "@/models/Product";
+import { notifyRag, serializeProduct } from "@/lib/rag";
 
 // Fetch all products for admin
 export async function GET() {
@@ -19,6 +20,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     await dbConnect();
     const product = await Product.create(body);
+    await notifyRag("upsert", serializeProduct(product));
     return NextResponse.json({ success: true, product });
   } catch {
     return NextResponse.json({ error: "Failed to create product" }, { status: 500 });

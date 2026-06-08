@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Arial, sans-serif; }
+  body { background:#fff; padding:40px; width:1180px; }
+  .title { text-align:center; font-size:24px; font-weight:700; color:#9c4a2a; margin-bottom:4px; }
+  .sub { text-align:center; font-size:13px; color:#777; margin-bottom:30px; }
+  .grid { display:flex; flex-wrap:wrap; gap:26px; justify-content:center; align-items:flex-start; }
+  .ent { width:330px; border:2px solid #c1612f; border-radius:12px; overflow:hidden; box-shadow:0 4px 14px rgba(0,0,0,.08); }
+  .ent.side { width:300px; }
+  .ent h3 { background:#9c4a2a; color:#fff; padding:9px 14px; font-size:15px; letter-spacing:.5px; }
+  table { width:100%; border-collapse:collapse; }
+  td { padding:6px 14px; font-size:12px; border-top:1px solid #f0e6dd; }
+  td.t { color:#888; text-align:right; width:90px; }
+  .pk { font-weight:700; color:#9c4a2a; }
+  .fk { font-weight:700; color:#3f6b3e; }
+  .uk { font-weight:700; color:#9c6a1a; }
+  .legend { margin-top:26px; text-align:center; font-size:12px; color:#555; }
+  .legend span { margin:0 10px; }
+  .rel { margin-top:8px; text-align:center; font-size:12px; color:#444; line-height:1.9; }
+  .rel code { background:#fdf6f1; padding:1px 6px; border-radius:4px; color:#9c4a2a; }
+</style>
+</head>
+<body>
+  <div class="title">Entity–Relationship Diagram — Matir Poshara</div>
+  <div class="sub">MongoDB collections (document model). PK = primary key, FK = reference, UK = unique key</div>
+  <div class="grid">
+    <div class="ent">
+      <h3>USER</h3>
+      <table>
+        <tr><td class="pk">_id</td><td class="t">ObjectId · PK</td></tr>
+        <tr><td>name</td><td class="t">String, req</td></tr>
+        <tr><td class="uk">email</td><td class="t">String · UK</td></tr>
+        <tr><td>phone</td><td class="t">String</td></tr>
+        <tr><td>address</td><td class="t">String</td></tr>
+        <tr><td>passwordHash</td><td class="t">String (scrypt)</td></tr>
+        <tr><td>createdAt / updatedAt</td><td class="t">Date</td></tr>
+      </table>
+    </div>
+    <div class="ent">
+      <h3>PRODUCT</h3>
+      <table>
+        <tr><td class="pk">_id</td><td class="t">ObjectId · PK</td></tr>
+        <tr><td>name</td><td class="t">String, req</td></tr>
+        <tr><td>description</td><td class="t">String</td></tr>
+        <tr><td>price</td><td class="t">Number, req</td></tr>
+        <tr><td>originalPrice</td><td class="t">Number</td></tr>
+        <tr><td class="fk">category</td><td class="t">String → Category.name</td></tr>
+        <tr><td>stock</td><td class="t">Number (≥0)</td></tr>
+        <tr><td>badge / image / icon</td><td class="t">String</td></tr>
+        <tr><td>isBestSelling</td><td class="t">Boolean</td></tr>
+      </table>
+    </div>
+    <div class="ent">
+      <h3>ORDER</h3>
+      <table>
+        <tr><td class="pk">_id</td><td class="t">ObjectId · PK</td></tr>
+        <tr><td class="uk">orderNumber</td><td class="t">String · UK</td></tr>
+        <tr><td>customer{name,phone,address}</td><td class="t">Embedded</td></tr>
+        <tr><td class="fk">items[].productId</td><td class="t">→ Product._id</td></tr>
+        <tr><td>items[].name/price/qty</td><td class="t">Embedded[]</td></tr>
+        <tr><td>totalPrice</td><td class="t">Number</td></tr>
+        <tr><td>status</td><td class="t">enum(5)</td></tr>
+        <tr><td>createdAt / updatedAt</td><td class="t">Date</td></tr>
+      </table>
+    </div>
+    <div class="ent side">
+      <h3>CATEGORY</h3>
+      <table>
+        <tr><td class="pk">_id</td><td class="t">ObjectId · PK</td></tr>
+        <tr><td>name</td><td class="t">String, req</td></tr>
+        <tr><td>productCount</td><td class="t">Number</td></tr>
+        <tr><td>image / icon</td><td class="t">String</td></tr>
+      </table>
+    </div>
+    <div class="ent side">
+      <h3>ARTISAN</h3>
+      <table>
+        <tr><td class="pk">_id</td><td class="t">ObjectId · PK</td></tr>
+        <tr><td>name / village</td><td class="t">String, req</td></tr>
+        <tr><td>experience / story</td><td class="t">String, req</td></tr>
+        <tr><td>image</td><td class="t">String</td></tr>
+      </table>
+    </div>
+    <div class="ent side">
+      <h3>SETTINGS (singleton)</h3>
+      <table>
+        <tr><td class="uk">key</td><td class="t">"global" · UK</td></tr>
+        <tr><td>liveChatEnabled/Url/Title</td><td class="t">Mixed</td></tr>
+        <tr><td>ragEnabled/WebhookUrl/ApiKey</td><td class="t">Mixed</td></tr>
+        <tr><td>ragLastSyncAt</td><td class="t">Date</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="rel">
+    <b>Relationships:</b><br>
+    <code>Category 1 — ∞ Product</code> (Product.category references Category.name) &nbsp;•&nbsp;
+    <code>Product 1 — ∞ Order.items</code> (items[].productId references Product._id) &nbsp;•&nbsp;
+    <code>User 1 — ∞ Order</code> (by customer phone/identity)
+  </div>
+  <div class="legend">
+    <span class="pk">■ Primary Key</span>
+    <span class="fk">■ Foreign / Reference</span>
+    <span class="uk">■ Unique Key</span>
+  </div>
+</body>
+</html>

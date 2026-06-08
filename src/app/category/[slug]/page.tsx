@@ -50,16 +50,17 @@ async function getCategoryProducts(slug: string, searchParams: { min?: string, m
   }
 }
 
-export default async function CategoryPage({ 
-  params, 
-  searchParams 
-}: { 
-  params: { slug: string }, 
-  searchParams: { min?: string, max?: string, rating?: string } 
+export default async function CategoryPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug: string }>,
+  searchParams: Promise<{ min?: string, max?: string, rating?: string }>
 }) {
-  const { slug } = params;
+  const { slug } = await params;
+  const resolvedSearchParams = await searchParams;
   const categoryName = slugToName[slug] || "সকল পণ্য";
-  const products = await getCategoryProducts(slug, searchParams);
+  const products = await getCategoryProducts(slug, resolvedSearchParams);
 
   return (
     <main className="min-h-screen bg-cream">

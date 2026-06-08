@@ -16,6 +16,8 @@ interface ProductCardProps {
     reviewsCount: number;
     badge?: "new" | "sale" | "hot";
     icon?: string;
+    image?: string;
+    stock?: number;
   };
 }
 
@@ -24,9 +26,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [added, setAdded] = useState(false);
 
+  // stock is undefined for mock/fallback data — treat that as available.
+  const outOfStock = product.stock === 0;
+  const hasImage = !!product.image && product.image !== "/placeholder-product.svg";
+
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (outOfStock) return;
     addToCart(product);
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
@@ -51,8 +58,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </Badge>
           </div>
         )}
-        
-        <button 
+
+        {outOfStock && (
+          <div className="absolute top-2.5 left-2.5 z-10 bg-text-dark/80 text-white text-[10px] font-bold px-2 py-1 rounded">
+            স্টক নেই
+          </div>
+        )}
+
+        <button
           onClick={handleLike}
           className={`absolute top-2.5 right-2.5 w-7.5 h-7.5 bg-white rounded-full flex items-center justify-center shadow-md transition-all z-10 ${
             isLiked ? "text-terracotta" : "text-text-light opacity-0 group-hover:opacity-100"
@@ -61,9 +74,18 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <Heart size={14} fill={isLiked ? "currentColor" : "none"} />
         </button>
 
-        <div className="transition-transform group-hover:scale-110 duration-500">
-          {product.icon}
-        </div>
+        {hasImage ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={product.image}
+            alt={product.name}
+            className={`w-full h-full object-cover transition-transform group-hover:scale-110 duration-500 ${outOfStock ? "opacity-60" : ""}`}
+          />
+        ) : (
+          <div className={`transition-transform group-hover:scale-110 duration-500 ${outOfStock ? "opacity-60" : ""}`}>
+            {product.icon}
+          </div>
+        )}
       </div>
 
       <div className="p-3.5">
@@ -88,13 +110,18 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </div>
 
         <div className="flex gap-2">
-          <button 
+          <button
             onClick={handleAddToCart}
+            disabled={outOfStock}
             className={`flex-1 py-2 rounded-md font-hind text-xs font-semibold transition-colors ${
-              added ? "bg-leaf text-white" : "bg-terracotta text-white hover:bg-earth"
+              outOfStock
+                ? "bg-cream-dark text-text-light cursor-not-allowed"
+                : added
+                ? "bg-leaf text-white"
+                : "bg-terracotta text-white hover:bg-earth"
             }`}
           >
-            {added ? "✓ যোগ হয়েছে" : "কার্টে যোগ করুন"}
+            {outOfStock ? "স্টক নেই" : added ? "✓ যোগ হয়েছে" : "কার্টে যোগ করুন"}
           </button>
           <div className="bg-cream-dark text-text-mid p-2 rounded-md group-hover:bg-clay group-hover:text-white transition-all">
             <Eye size={16} />

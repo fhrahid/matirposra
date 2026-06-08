@@ -37,8 +37,8 @@ async function getRelatedProducts(category: string, currentId: string) {
   }
 }
 
-export default async function ProductDetailPage({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const product = await getProduct(id);
 
   if (!product) {
@@ -61,6 +61,9 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
 
   const relatedProducts = await getRelatedProducts(product.category, id);
 
+  const inStock = (product.stock ?? 0) > 0;
+  const hasImage = !!product.image && product.image !== "/placeholder-product.svg";
+
   return (
     <main className="min-h-screen bg-cream">
       <Header />
@@ -81,7 +84,12 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
             {/* LEFT: IMAGE GALLERY */}
             <div className="lg:w-1/2 p-6 md:p-10 bg-cream-dark/20 flex flex-col gap-4">
               <div className="aspect-square bg-cream-dark rounded-2xl flex items-center justify-center text-[120px] shadow-inner relative overflow-hidden">
-                {product.icon}
+                {hasImage ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                ) : (
+                  product.icon
+                )}
                 {product.badge && (
                   <div className="absolute top-6 left-6">
                     <Badge variant={product.badge} className="px-3 py-1.5 text-xs">
@@ -92,8 +100,13 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
               </div>
               <div className="grid grid-cols-4 gap-4">
                 {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="aspect-square bg-cream-dark/40 rounded-lg flex items-center justify-center text-3xl cursor-pointer hover:border-terracotta border-1.5 border-transparent transition-all">
-                    {product.icon}
+                  <div key={i} className="aspect-square bg-cream-dark/40 rounded-lg flex items-center justify-center text-3xl cursor-pointer hover:border-terracotta border-1.5 border-transparent transition-all overflow-hidden">
+                    {hasImage ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                    ) : (
+                      product.icon
+                    )}
                   </div>
                 ))}
               </div>
@@ -115,7 +128,11 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
                   <span className="text-text-light text-sm">|</span>
                   <span className="text-text-light text-sm">{product.reviewsCount}টি রিভিউ</span>
                   <span className="text-text-light text-sm">|</span>
-                  <span className="text-leaf text-sm font-bold">স্টকে আছে</span>
+                  {inStock ? (
+                    <span className="text-leaf text-sm font-bold">স্টকে আছে</span>
+                  ) : (
+                    <span className="text-red-500 text-sm font-bold">স্টক নেই</span>
+                  )}
                 </div>
               </div>
 
@@ -145,10 +162,24 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
                   </div>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <button className="flex-1 bg-terracotta text-white py-3.5 rounded-xl font-bold hover:bg-earth transition-all shadow-lg shadow-terracotta/25 flex items-center justify-center gap-2">
-                    কার্টে যোগ করুন
+                  <button
+                    disabled={!inStock}
+                    className={`flex-1 py-3.5 rounded-xl font-bold transition-all shadow-lg flex items-center justify-center gap-2 ${
+                      inStock
+                        ? "bg-terracotta text-white hover:bg-earth shadow-terracotta/25"
+                        : "bg-cream-dark text-text-light cursor-not-allowed shadow-none"
+                    }`}
+                  >
+                    {inStock ? "কার্টে যোগ করুন" : "স্টক নেই"}
                   </button>
-                  <button className="flex-1 bg-clay text-white py-3.5 rounded-xl font-bold hover:bg-earth transition-all shadow-lg shadow-clay/25">
+                  <button
+                    disabled={!inStock}
+                    className={`flex-1 py-3.5 rounded-xl font-bold transition-all shadow-lg ${
+                      inStock
+                        ? "bg-clay text-white hover:bg-earth shadow-clay/25"
+                        : "bg-cream-dark text-text-light cursor-not-allowed shadow-none"
+                    }`}
+                  >
                     এখনই কিনুন
                   </button>
                 </div>

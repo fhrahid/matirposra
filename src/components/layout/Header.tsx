@@ -3,12 +3,14 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Search, Heart, Package, ShoppingCart } from "lucide-react";
+import { Search, Heart, Package, ShoppingCart, User } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 
 const Header = () => {
   const router = useRouter();
   const { totalItems, setIsCartOpen, setIsTrackingOpen } = useCart();
+  const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearch = () => {
@@ -61,12 +63,30 @@ const Header = () => {
           </div>
 
           <div className="flex items-center gap-1.5 flex-shrink-0">
-            <button className="bg-transparent border-1.5 border-clay text-clay px-4 py-1.5 rounded-md text-sm font-medium hover:bg-clay hover:text-white transition-all">
-              লগইন
-            </button>
-            <button className="bg-terracotta text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-earth transition-all">
-              রেজিস্ট্রেশন
-            </button>
+            {user ? (
+              <Link
+                href="/account"
+                className="flex items-center gap-2 bg-transparent border-1.5 border-clay text-clay px-3 py-1.5 rounded-md text-sm font-medium hover:bg-clay hover:text-white transition-all max-w-[160px]"
+              >
+                <User size={16} className="flex-shrink-0" />
+                <span className="truncate">{user.name}</span>
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="bg-transparent border-1.5 border-clay text-clay px-4 py-1.5 rounded-md text-sm font-medium hover:bg-clay hover:text-white transition-all"
+                >
+                  লগইন
+                </Link>
+                <Link
+                  href="/register"
+                  className="bg-terracotta text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-earth transition-all"
+                >
+                  রেজিস্ট্রেশন
+                </Link>
+              </>
+            )}
             
             <div className="flex items-center gap-1 ml-2">
               <button className="flex flex-col items-center gap-0.5 p-1.5 text-text-mid hover:bg-cream-dark hover:text-terracotta rounded-lg transition-all">

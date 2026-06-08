@@ -3,13 +3,14 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { 
-  LayoutDashboard, 
-  ShoppingBag, 
-  Users, 
-  Package, 
-  LogOut, 
-  ChevronRight
+import {
+  LayoutDashboard,
+  ShoppingBag,
+  Users,
+  Package,
+  LogOut,
+  ChevronRight,
+  Settings
 } from "lucide-react";
 
 const AdminSidebar = () => {
@@ -26,6 +27,7 @@ const AdminSidebar = () => {
     { name: "পণ্যসমূহ", href: "/admin/products", icon: ShoppingBag },
     { name: "অর্ডারসমূহ", href: "/admin/orders", icon: Package },
     { name: "কারিগর", href: "/admin/artisans", icon: Users },
+    { name: "সেটিংস", href: "/admin/settings", icon: Settings },
   ];
 
   return (

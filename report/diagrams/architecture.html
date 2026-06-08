@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Arial, sans-serif; }
+  body { background:#fff; padding:40px; width:1100px; }
+  .title { text-align:center; font-size:26px; font-weight:700; color:#9c4a2a; margin-bottom:6px; }
+  .sub { text-align:center; font-size:14px; color:#777; margin-bottom:36px; }
+  .row { display:flex; align-items:stretch; justify-content:center; gap:0; }
+  .tier { width:300px; border-radius:18px; padding:20px; color:#fff; }
+  .tier h2 { font-size:18px; margin-bottom:4px; }
+  .tier .tag { font-size:11px; opacity:.85; margin-bottom:14px; display:block; }
+  .box { background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.35); border-radius:10px; padding:9px 12px; margin-bottom:8px; font-size:13px; }
+  .client { background:linear-gradient(160deg,#c1612f,#9c4a2a); }
+  .server { background:linear-gradient(160deg,#5b8c5a,#3f6b3e); }
+  .db { background:linear-gradient(160deg,#7a5230,#5c3d22); }
+  .arrow { display:flex; flex-direction:column; align-items:center; justify-content:center; width:90px; color:#9c4a2a; font-weight:700; }
+  .arrow .lab { font-size:10px; color:#888; text-align:center; margin:2px 0; }
+  .arrow .big { font-size:28px; line-height:1; }
+  .ext { display:flex; justify-content:center; gap:24px; margin-top:30px; }
+  .extbox { border:2px dashed #c1612f; border-radius:12px; padding:12px 18px; font-size:12px; color:#9c4a2a; background:#fdf6f1; text-align:center; max-width:260px; }
+  .extbox b { display:block; margin-bottom:3px; font-size:13px; }
+</style>
+</head>
+<body>
+  <div class="title">System Architecture — Matir Poshara (মাটির পশরা)</div>
+  <div class="sub">Three-tier architecture: Client → Server → Database</div>
+  <div class="row">
+    <div class="tier client">
+      <h2>CLIENT</h2>
+      <span class="tag">Browser · React 19 · Next.js App Router</span>
+      <div class="box">Customer storefront (Home, Category, Product, Search, Offers)</div>
+      <div class="box">Auth pages (Register / Login / Account)</div>
+      <div class="box">Cart &amp; Checkout (localStorage state)</div>
+      <div class="box">Admin Panel (Dashboard, Products, Orders, Settings)</div>
+    </div>
+    <div class="arrow">
+      <div class="lab">HTTPS<br>fetch / RSC</div>
+      <div class="big">⇄</div>
+      <div class="lab">JSON</div>
+    </div>
+    <div class="tier server">
+      <h2>SERVER</h2>
+      <span class="tag">Next.js 16 · Route Handlers + Server Components</span>
+      <div class="box">/api/auth · scrypt hash + HMAC session cookie</div>
+      <div class="box">/api/products · /api/admin/* CRUD</div>
+      <div class="box">/api/orders · order placement &amp; tracking</div>
+      <div class="box">CSV import / export · RAG webhook push</div>
+    </div>
+    <div class="arrow">
+      <div class="lab">Mongoose ODM<br>TLS</div>
+      <div class="big">⇄</div>
+      <div class="lab">BSON</div>
+    </div>
+    <div class="tier db">
+      <h2>DATABASE</h2>
+      <span class="tag">MongoDB Atlas · db: matir-poshra</span>
+      <div class="box">products · categories · artisans</div>
+      <div class="box">users · orders</div>
+      <div class="box">settings (singleton)</div>
+      <div class="box">Replica set → Change Streams</div>
+    </div>
+  </div>
+  <div class="ext">
+    <div class="extbox"><b>Live Chat (iframe)</b>Admin-configured 3rd-party widget embedded on all customer pages</div>
+    <div class="extbox"><b>RAG / Agentic Service</b>Real-time sync via webhook push or MongoDB Change Streams</div>
+  </div>
+</body>
+</html>
