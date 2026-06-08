@@ -19,15 +19,15 @@ const AdminSidebar = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("admin_auth");
-    router.push("/admin/login");
+    router.push("/mp-control-7h2x/login");
   };
 
   const navLinks = [
-    { name: "ওভারভিউ", href: "/admin", icon: LayoutDashboard },
-    { name: "পণ্যসমূহ", href: "/admin/products", icon: ShoppingBag },
-    { name: "অর্ডারসমূহ", href: "/admin/orders", icon: Package },
-    { name: "কারিগর", href: "/admin/artisans", icon: Users },
-    { name: "সেটিংস", href: "/admin/settings", icon: Settings },
+    { name: "ওভারভিউ", href: "/mp-control-7h2x", icon: LayoutDashboard },
+    { name: "পণ্যসমূহ", href: "/mp-control-7h2x/products", icon: ShoppingBag },
+    { name: "অর্ডারসমূহ", href: "/mp-control-7h2x/orders", icon: Package },
+    { name: "কারিগর", href: "/mp-control-7h2x/artisans", icon: Users },
+    { name: "সেটিংস", href: "/mp-control-7h2x/settings", icon: Settings },
   ];
 
   return (

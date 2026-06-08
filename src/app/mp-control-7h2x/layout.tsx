@@ -17,14 +17,14 @@ export default function AdminLayout({
 
   useEffect(() => {
     const checkAuth = () => {
-      if (pathname === "/admin/login") {
+      if (pathname === "/mp-control-7h2x/login") {
         setLoading(false);
         return;
       }
 
       const auth = localStorage.getItem("admin_auth");
       if (!auth) {
-        router.push("/admin/login");
+        router.push("/mp-control-7h2x/login");
       } else {
         setIsAuth(true);
       }
@@ -46,7 +46,7 @@ export default function AdminLayout({
   }
 
   // If it's the login page, just render children without sidebar
-  if (pathname === "/admin/login") {
+  if (pathname === "/mp-control-7h2x/login") {
     return <>{children}</>;
   }
 

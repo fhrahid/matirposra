@@ -11,7 +11,7 @@ interface LiveChatConfig {
 }
 
 // Floating live-chat widget. The embed URL is configured by the admin and
-// shown on every customer-facing page (hidden inside the /admin panel).
+// shown on every customer-facing page (hidden inside the admin panel).
 const LiveChatWidget = () => {
   const pathname = usePathname();
   const [config, setConfig] = useState<LiveChatConfig | null>(null);
@@ -31,7 +31,7 @@ const LiveChatWidget = () => {
   }, []);
 
   // Never show in the admin panel.
-  if (pathname?.startsWith("/admin")) return null;
+  if (pathname?.startsWith("/mp-control-7h2x")) return null;
   if (!config?.enabled || !config.url) return null;
 
   return (

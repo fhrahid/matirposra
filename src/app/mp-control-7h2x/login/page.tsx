@@ -18,9 +18,9 @@ const AdminLoginPage = () => {
     // Simple demo password check
     // In production, this should be an API call or use NextAuth
     setTimeout(() => {
-      if (password === "admin123") {
+      if (password === "Matir@Poshara2026") {
         localStorage.setItem("admin_auth", "true");
-        router.push("/admin");
+        router.push("/mp-control-7h2x");
       } else {
         setError("ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।");
         setLoading(false);
@@ -48,7 +48,7 @@ const AdminLoginPage = () => {
               <input 
                 type="text"
                 disabled
-                value="admin"
+                value="mpadmin"
                 className="w-full bg-cream border border-cream-dark rounded-xl px-4 py-3 outline-none text-text-mid text-sm opacity-60 cursor-not-allowed"
               />
             </div>
