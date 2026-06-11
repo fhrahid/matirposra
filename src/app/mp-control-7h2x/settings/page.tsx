@@ -10,14 +10,14 @@ import {
 
 interface SettingsState {
   liveChatEnabled: boolean;
-  liveChatUrl: string;
-  liveChatTitle: string;
+  liveChatScriptUrl: string;
+  liveChatTenantId: string;
 }
 
 const initial: SettingsState = {
   liveChatEnabled: false,
-  liveChatUrl: "",
-  liveChatTitle: "লাইভ চ্যাট",
+  liveChatScriptUrl: "https://symai.aetherbd.com/static/widget.js",
+  liveChatTenantId: "",
 };
 
 const AdminSettingsPage = () => {
@@ -60,8 +60,8 @@ const AdminSettingsPage = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           liveChatEnabled: settings.liveChatEnabled,
-          liveChatUrl: settings.liveChatUrl,
-          liveChatTitle: settings.liveChatTitle,
+          liveChatScriptUrl: settings.liveChatScriptUrl,
+          liveChatTenantId: settings.liveChatTenantId,
         }),
       });
       if (res.ok) {
@@ -137,25 +137,25 @@ const AdminSettingsPage = () => {
           <Toggle on={settings.liveChatEnabled} onChange={(v) => update({ liveChatEnabled: v })} />
         </div>
         <p className="text-xs text-text-light mb-6">
-          চালু করলে সকল কাস্টমার পেজ ও ল্যান্ডিং পেজে একটি ভাসমান চ্যাট বাটন দেখা যাবে (অ্যাডমিন প্যানেলে নয়)।
+          চালু করলে সকল কাস্টমার পেজ ও ল্যান্ডিং পেজে চ্যাট উইজেট স্ক্রিপ্টটি লোড হবে (অ্যাডমিন প্যানেলে নয়)। উইজেটটি নিজেই তার ভাসমান বাটন তৈরি করবে।
         </p>
 
         <div className="space-y-5">
           <div className="space-y-2">
-            <label className="text-xs font-bold text-text-mid uppercase tracking-wider">চ্যাট iframe URL</label>
+            <label className="text-xs font-bold text-text-mid uppercase tracking-wider">উইজেট স্ক্রিপ্ট URL</label>
             <input
-              value={settings.liveChatUrl}
-              onChange={(e) => update({ liveChatUrl: e.target.value })}
-              placeholder="https://tawk.to/chat/... বা যেকোনো লাইভ চ্যাট এম্বেড URL"
+              value={settings.liveChatScriptUrl}
+              onChange={(e) => update({ liveChatScriptUrl: e.target.value })}
+              placeholder="https://symai.aetherbd.com/static/widget.js"
               className={inputClass}
             />
           </div>
           <div className="space-y-2">
-            <label className="text-xs font-bold text-text-mid uppercase tracking-wider">উইজেট শিরোনাম</label>
+            <label className="text-xs font-bold text-text-mid uppercase tracking-wider">Tenant ID (data-tenant-id)</label>
             <input
-              value={settings.liveChatTitle}
-              onChange={(e) => update({ liveChatTitle: e.target.value })}
-              placeholder="লাইভ চ্যাট"
+              value={settings.liveChatTenantId}
+              onChange={(e) => update({ liveChatTenantId: e.target.value })}
+              placeholder="be221dedb00cc7879ef4d6f2"
               className={inputClass}
             />
           </div>

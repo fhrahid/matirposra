@@ -8,12 +8,14 @@ export async function GET() {
     return NextResponse.json({
       liveChat: {
         enabled: s.liveChatEnabled,
-        url: s.liveChatUrl,
-        title: s.liveChatTitle,
+        scriptUrl: s.liveChatScriptUrl,
+        tenantId: s.liveChatTenantId,
       },
     });
   } catch (error) {
     console.error("Settings fetch error:", error);
-    return NextResponse.json({ liveChat: { enabled: false, url: "", title: "" } });
+    return NextResponse.json({
+      liveChat: { enabled: false, scriptUrl: "", tenantId: "" },
+    });
   }
 }

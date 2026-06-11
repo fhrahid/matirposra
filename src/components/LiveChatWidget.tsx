@@ -1,73 +1,59 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { MessageCircle, X } from "lucide-react";
 
 interface LiveChatConfig {
   enabled: boolean;
-  url: string;
-  title: string;
+  scriptUrl: string;
+  tenantId: string;
 }
 
-// Floating live-chat widget. The embed URL is configured by the admin and
-// shown on every customer-facing page (hidden inside the admin panel).
+// Element id used both for the injected <script> and the widget's mounted root,
+// so we can find and remove them when navigating into the admin panel.
+const SCRIPT_ID = "live-chat-widget-script";
+
+// Loads the admin-configured third-party live-chat widget by injecting its
+// <script defer data-tenant-id="..."> tag. The widget self-mounts its own
+// floating button/panel, so this component renders nothing itself. The script
+// is loaded on customer-facing pages only and removed inside the admin panel.
 const LiveChatWidget = () => {
   const pathname = usePathname();
-  const [config, setConfig] = useState<LiveChatConfig | null>(null);
-  const [open, setOpen] = useState(false);
+  const isAdmin = pathname?.startsWith("/mp-control-7h2x") ?? false;
 
   useEffect(() => {
+    if (isAdmin) {
+      // Tear down any previously injected widget when entering the admin panel.
+      document.getElementById(SCRIPT_ID)?.remove();
+      return;
+    }
+
     let active = true;
+
     fetch("/api/settings")
       .then((r) => r.json())
       .then((data) => {
-        if (active) setConfig(data.liveChat || null);
+        if (!active) return;
+        const cfg: LiveChatConfig | undefined = data.liveChat;
+        if (!cfg?.enabled || !cfg.scriptUrl || !cfg.tenantId) return;
+        // Already injected — don't load it twice.
+        if (document.getElementById(SCRIPT_ID)) return;
+
+        const script = document.createElement("script");
+        script.id = SCRIPT_ID;
+        script.src = cfg.scriptUrl;
+        script.defer = true;
+        script.setAttribute("data-tenant-id", cfg.tenantId);
+        document.body.appendChild(script);
       })
       .catch(() => {});
+
     return () => {
       active = false;
     };
-  }, []);
+  }, [isAdmin]);
 
-  // Never show in the admin panel.
-  if (pathname?.startsWith("/mp-control-7h2x")) return null;
-  if (!config?.enabled || !config.url) return null;
-
-  return (
-    <div className="fixed bottom-6 right-6 z-[1200] flex flex-col items-end gap-3">
-      {open && (
-        <div className="w-[90vw] max-w-[380px] h-[70vh] max-h-[560px] bg-white rounded-2xl shadow-2xl border border-cream-dark overflow-hidden flex flex-col animate-in">
-          <div className="bg-terracotta text-white px-4 py-3 flex items-center justify-between flex-shrink-0">
-            <span className="font-bold text-sm flex items-center gap-2">
-              <MessageCircle size={16} /> {config.title || "লাইভ চ্যাট"}
-            </span>
-            <button
-              onClick={() => setOpen(false)}
-              className="p-1 hover:bg-white/20 rounded-md transition-colors"
-              aria-label="বন্ধ করুন"
-            >
-              <X size={18} />
-            </button>
-          </div>
-          <iframe
-            src={config.url}
-            title={config.title || "Live chat"}
-            className="flex-1 w-full border-0"
-            allow="microphone; camera; clipboard-write; autoplay"
-          />
-        </div>
-      )}
-
-      <button
-        onClick={() => setOpen((v) => !v)}
-        className="w-14 h-14 rounded-full bg-terracotta text-white shadow-xl shadow-terracotta/30 flex items-center justify-center hover:bg-clay transition-all hover:scale-105"
-        aria-label={open ? "চ্যাট বন্ধ করুন" : "চ্যাট খুলুন"}
-      >
-        {open ? <X size={24} /> : <MessageCircle size={24} />}
-      </button>
-    </div>
-  );
+  return null;
 };
 
 export default LiveChatWidget;

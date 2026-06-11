@@ -8,8 +8,8 @@ export async function GET() {
     return NextResponse.json({
       settings: {
         liveChatEnabled: s.liveChatEnabled,
-        liveChatUrl: s.liveChatUrl,
-        liveChatTitle: s.liveChatTitle,
+        liveChatScriptUrl: s.liveChatScriptUrl,
+        liveChatTenantId: s.liveChatTenantId,
       },
     });
   } catch (error) {
@@ -25,8 +25,8 @@ export async function PATCH(request: Request) {
     const s = await getSettings();
 
     if (typeof body.liveChatEnabled === "boolean") s.liveChatEnabled = body.liveChatEnabled;
-    if (typeof body.liveChatUrl === "string") s.liveChatUrl = body.liveChatUrl.trim();
-    if (typeof body.liveChatTitle === "string") s.liveChatTitle = body.liveChatTitle.trim();
+    if (typeof body.liveChatScriptUrl === "string") s.liveChatScriptUrl = body.liveChatScriptUrl.trim();
+    if (typeof body.liveChatTenantId === "string") s.liveChatTenantId = body.liveChatTenantId.trim();
 
     await s.save();
 
