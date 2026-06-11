@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import dbConnect from "@/lib/mongodb";
 import Order from "@/models/Order";
 import Product from "@/models/Product";
+import { getCurrentUser } from "@/lib/auth";
 
 interface OrderItem {
   productId: string;
@@ -24,6 +25,15 @@ export async function POST(request: Request) {
 
     if (!customer || !items || items.length === 0) {
       return NextResponse.json({ error: "Invalid order data" }, { status: 400 });
+    }
+
+    // Orders require a logged-in customer — no guest checkout.
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json(
+        { error: "অর্ডার করতে অনুগ্রহ করে লগইন করুন।" },
+        { status: 401 }
+      );
     }
 
     await dbConnect();
@@ -67,6 +77,7 @@ export async function POST(request: Request) {
 
     const newOrder = await Order.create({
       orderNumber,
+      userId: String((user as { _id: unknown })._id),
       customer,
       items,
       totalPrice,

@@ -6,12 +6,14 @@ import Header from "@/components/layout/Header";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 import { ChevronLeft, CheckCircle2, Loader2, MapPin, Phone, User } from "lucide-react";
 import Link from "next/link";
 
 const CheckoutPage = () => {
   const router = useRouter();
   const { cartItems, totalPrice, clearCart, setIsTrackingOpen } = useCart();
+  const { user, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [orderNumber, setOrderNumber] = useState("");
@@ -21,6 +23,25 @@ const CheckoutPage = () => {
     phone: "",
     address: "",
   });
+
+  // Require login — guests cannot place orders. Send them to login and bring
+  // them back to checkout afterwards.
+  useEffect(() => {
+    if (!authLoading && !user && !success) {
+      router.push("/login?redirect=/checkout");
+    }
+  }, [authLoading, user, success, router]);
+
+  // Pre-fill the delivery form from the logged-in customer's saved profile.
+  useEffect(() => {
+    if (user) {
+      setFormData((prev) => ({
+        name: prev.name || user.name || "",
+        phone: prev.phone || user.phone || "",
+        address: prev.address || user.address || "",
+      }));
+    }
+  }, [user]);
 
   // Redirect if cart is empty and not on success screen
   useEffect(() => {
@@ -59,13 +80,18 @@ const CheckoutPage = () => {
         }),
       });
 
+      if (res.status === 401) {
+        router.push("/login?redirect=/checkout");
+        return;
+      }
+
       const data = await res.json();
       if (data.success) {
         setOrderNumber(data.orderNumber);
         setSuccess(true);
         clearCart();
       } else {
-        alert("অর্ডার সম্পন্ন করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
+        alert(data.error || "অর্ডার সম্পন্ন করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
       }
     } catch (error) {
       console.error("Checkout Error:", error);

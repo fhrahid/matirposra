@@ -52,7 +52,8 @@ const RegisterPage = () => {
       const data = await res.json();
       if (data.success) {
         setUser(data.user);
-        router.push("/account");
+        const redirect = new URLSearchParams(window.location.search).get("redirect");
+        router.push(redirect || "/account");
       } else {
         setError(data.error || "রেজিস্ট্রেশন ব্যর্থ হয়েছে।");
       }

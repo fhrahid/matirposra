@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { 
-  Search, 
-  ExternalLink, 
+import {
+  Search,
   Loader2,
   Calendar,
-  Phone
+  Phone,
+  MapPin
 } from "lucide-react";
 
 interface OrderItem {
@@ -108,17 +108,16 @@ const AdminOrdersPage = () => {
             <thead>
               <tr className="bg-cream border-b border-cream-dark">
                 <th className="px-8 py-5 text-[11px] font-bold text-text-light uppercase tracking-widest">অর্ডার ও তারিখ</th>
-                <th className="px-8 py-5 text-[11px] font-bold text-text-light uppercase tracking-widest">কাস্টমার</th>
-                <th className="px-8 py-5 text-[11px] font-bold text-text-light uppercase tracking-widest">পণ্য</th>
+                <th className="px-8 py-5 text-[11px] font-bold text-text-light uppercase tracking-widest">কাস্টমার ও ঠিকানা</th>
+                <th className="px-8 py-5 text-[11px] font-bold text-text-light uppercase tracking-widest">অর্ডার সামারি</th>
                 <th className="px-8 py-5 text-[11px] font-bold text-text-light uppercase tracking-widest">মোট মূল্য</th>
                 <th className="px-8 py-5 text-[11px] font-bold text-text-light uppercase tracking-widest">স্ট্যাটাস</th>
-                <th className="px-8 py-5 text-[11px] font-bold text-text-light uppercase tracking-widest text-right">অ্যাকশন</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-cream-dark">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="px-8 py-20 text-center">
+                  <td colSpan={5} className="px-8 py-20 text-center">
                     <div className="flex flex-col items-center gap-3">
                       <Loader2 className="animate-spin text-terracotta" size={32} />
                       <p className="text-sm text-text-mid font-medium">অর্ডার লোড হচ্ছে...</p>
@@ -136,26 +135,38 @@ const AdminOrdersPage = () => {
                         </div>
                       </div>
                     </td>
-                    <td className="px-8 py-6">
-                      <div className="flex flex-col gap-1">
+                    <td className="px-8 py-6 align-top">
+                      <div className="flex flex-col gap-1 max-w-[220px]">
                         <span className="text-sm font-semibold text-text-dark">{order.customer.name}</span>
                         <div className="flex items-center gap-1.5 text-[10px] text-text-light">
                           <Phone size={12} /> {order.customer.phone}
                         </div>
+                        <div className="flex items-start gap-1.5 text-[10px] text-text-light mt-0.5">
+                          <MapPin size={12} className="mt-0.5 flex-shrink-0 text-clay" />
+                          <span>{order.customer.address}</span>
+                        </div>
                       </div>
                     </td>
-                    <td className="px-8 py-6">
-                      <div className="flex flex-col gap-1">
-                        <span className="text-xs font-medium text-text-mid">{order.items.length}টি আইটেম</span>
-                        <div className="flex items-center gap-1.5 text-[10px] text-text-light truncate max-w-[150px]">
-                          {order.items.map((it) => it.name).join(", ")}
-                        </div>
+                    <td className="px-8 py-6 align-top">
+                      <div className="flex flex-col gap-1.5 max-w-[260px]">
+                        <span className="text-xs font-medium text-text-mid">{order.items.length.toLocaleString("bn-BD")}টি আইটেম</span>
+                        {order.items.map((it, idx) => (
+                          <div key={idx} className="flex items-center justify-between gap-3 text-[11px]">
+                            <span className="text-text-mid truncate">
+                              {it.icon ? `${it.icon} ` : ""}{it.name}
+                              <span className="text-text-light"> × {it.qty.toLocaleString("bn-BD")}</span>
+                            </span>
+                            <span className="text-text-dark font-medium whitespace-nowrap">
+                              ৳{(it.price * it.qty).toLocaleString("bn-BD")}
+                            </span>
+                          </div>
+                        ))}
                       </div>
                     </td>
                     <td className="px-8 py-6">
                       <span className="text-sm font-bold text-terracotta">৳{order.totalPrice.toLocaleString("bn-BD")}</span>
                     </td>
-                    <td className="px-8 py-6">
+                    <td className="px-8 py-6 align-top">
                       <div className="relative">
                         {updating === order._id ? (
                           <div className="flex items-center gap-2 px-3 py-1.5 bg-cream rounded-full border border-cream-dark">
@@ -177,16 +188,11 @@ const AdminOrdersPage = () => {
                         )}
                       </div>
                     </td>
-                    <td className="px-8 py-6 text-right">
-                      <button className="p-2 text-text-light hover:text-terracotta hover:bg-cream rounded-lg transition-all">
-                        <ExternalLink size={18} />
-                      </button>
-                    </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={6} className="px-8 py-20 text-center text-text-light italic">
+                  <td colSpan={5} className="px-8 py-20 text-center text-text-light italic">
                     কোনো অর্ডার পাওয়া যায়নি
                   </td>
                 </tr>

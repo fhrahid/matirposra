@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   ShoppingBag,
   Users,
+  UserCircle,
   Package,
   LogOut,
   ChevronRight,
@@ -26,6 +27,7 @@ const AdminSidebar = () => {
     { name: "ওভারভিউ", href: "/mp-control-7h2x", icon: LayoutDashboard },
     { name: "পণ্যসমূহ", href: "/mp-control-7h2x/products", icon: ShoppingBag },
     { name: "অর্ডারসমূহ", href: "/mp-control-7h2x/orders", icon: Package },
+    { name: "কাস্টমার", href: "/mp-control-7h2x/customers", icon: UserCircle },
     { name: "কারিগর", href: "/mp-control-7h2x/artisans", icon: Users },
     { name: "সেটিংস", href: "/mp-control-7h2x/settings", icon: Settings },
   ];
