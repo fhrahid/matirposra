@@ -4,10 +4,10 @@ import mongoose, { Schema, Document } from "mongoose";
 // such as the live-chat widget.
 export interface ISettings extends Document {
   key: string;
-  // Live chat — injected as a third-party <script> widget that self-mounts.
+  // Live chat — embedded in a toggleable panel (we own the open/close button).
   liveChatEnabled: boolean;
-  liveChatScriptUrl: string;
-  liveChatTenantId: string;
+  liveChatUrl: string;
+  liveChatTitle: string;
   updatedAt: Date;
 }
 
@@ -16,11 +16,11 @@ const SettingsSchema: Schema = new Schema(
     key: { type: String, required: true, unique: true, default: "global" },
 
     liveChatEnabled: { type: Boolean, default: false },
-    liveChatScriptUrl: {
+    liveChatUrl: {
       type: String,
-      default: "https://symai.aetherbd.com/static/widget.js",
+      default: "https://symai.aetherbd.com/widget/be221dedb00cc7879ef4d6f2",
     },
-    liveChatTenantId: { type: String, default: "" },
+    liveChatTitle: { type: String, default: "লাইভ চ্যাট" },
   },
   { timestamps: true }
 );
