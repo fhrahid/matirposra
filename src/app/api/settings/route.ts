@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { getSettings } from "@/lib/settings";
 
 // Public endpoint — returns ONLY customer-safe settings (live chat).
-// Never exposes RAG webhook/key here.
 export async function GET() {
   try {
     const s = await getSettings();

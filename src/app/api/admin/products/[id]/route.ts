@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/mongodb";
 import Product from "@/models/Product";
-import { notifyRag, serializeProduct } from "@/lib/rag";
 
 // Update a single product (also used for manual stock edits).
 export async function PATCH(
@@ -22,7 +21,6 @@ export async function PATCH(
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
-    await notifyRag("upsert", serializeProduct(updated));
     return NextResponse.json({ success: true, product: updated });
   } catch (error) {
     console.error("Product Update Error:", error);
@@ -43,7 +41,6 @@ export async function DELETE(
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
-    await notifyRag("delete", { id });
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Product Delete Error:", error);
